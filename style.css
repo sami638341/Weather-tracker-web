@@ -1,119 +1,52 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
-}
-
 body {
-  min-height: 100vh;
+  margin: 0;
+  font-family: 'Segoe UI';
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
   color: white;
-  overflow-x: hidden;
-}
-
-/* Animated background */
-.bg-animation {
-  position: fixed;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(45deg, #ff6ec4, #7873f5, #42e695, #f093fb);
-  animation: moveBG 10s infinite linear;
-  z-index: -1;
-}
-
-@keyframes moveBG {
-  0% { transform: translate(0,0); }
-  50% { transform: translate(-25%, -25%); }
-  100% { transform: translate(0,0); }
 }
 
 .app {
-  max-width: 420px;
-  margin: auto;
   padding: 20px;
 }
 
-/* Search */
-.search {
+.top {
   display: flex;
   gap: 10px;
-  margin-bottom: 15px;
 }
 
-.search input {
+input {
   flex: 1;
   padding: 12px;
-  border-radius: 30px;
+  border-radius: 10px;
   border: none;
-  outline: none;
 }
 
-.search button {
-  border-radius: 50%;
+button {
   padding: 12px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
 }
 
-/* Glass */
-.glass {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(20px);
-  border-radius: 25px;
+.card {
+  margin-top: 20px;
   padding: 20px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-}
-
-.top {
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.1);
   text-align: center;
-  margin-bottom: 15px;
 }
 
-.main-card {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.main-card h2 {
-  font-size: 52px;
-}
-
-canvas {
-  margin: 20px 0;
-}
-
-/* Hourly */
 .scroll {
   display: flex;
   overflow-x: auto;
   gap: 10px;
 }
 
-.hour-card {
+.box {
   min-width: 80px;
   padding: 10px;
   border-radius: 15px;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.15);
   text-align: center;
-  transition: 0.3s;
-}
-
-.hour-card:hover {
-  transform: scale(1.1);
-}
-
-/* Daily */
-.daily-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.day-card {
-  padding: 12px;
-  border-radius: 15px;
-  background: rgba(255,255,255,0.2);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
