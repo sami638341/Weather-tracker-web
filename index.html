@@ -1,36 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Weather Pro</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Premium Weather</title>
 
-  <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif;}
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.container{
+    width:95%;
+    max-width:450px;
+    backdrop-filter:blur(20px);
+    background:rgba(255,255,255,0.1);
+    border-radius:20px;
+    padding:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.5);
+}
+
+.search{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.search input{
+    flex:1;
+    padding:10px;
+    border:none;
+    border-radius:10px;
+    outline:none;
+}
+
+.search button{
+    padding:10px 15px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    background:#00c6ff;
+    color:white;
+}
+
+.weather{
+    text-align:center;
+}
+
+.weather img{
+    width:100px;
+}
+
+.temp{
+    font-size:48px;
+    font-weight:bold;
+}
+
+.city{
+    font-size:22px;
+}
+
+.details{
+    display:flex;
+    justify-content:space-between;
+    margin-top:20px;
+}
+
+.card{
+    text-align:center;
+}
+
+.forecast{
+    margin-top:20px;
+    display:flex;
+    overflow-x:auto;
+    gap:10px;
+}
+
+.forecast div{
+    background:rgba(255,255,255,0.1);
+    padding:10px;
+    border-radius:10px;
+    min-width:80px;
+    text-align:center;
+}
+</style>
 </head>
+
 <body>
 
-<div class="app">
+<div class="container">
+    <div class="search">
+        <input id="searchBox" placeholder="Search city...">
+        <button onclick="searchWeather()">🔍</button>
+    </div>
 
-  <div class="top">
-    <input type="text" id="search" placeholder="Search city...">
-    <button onclick="searchCity()">🔍</button>
-  </div>
+    <div class="weather" id="weather"></div>
 
-  <div class="card main">
-    <h1 id="city">Loading...</h1>
-    <img id="icon">
-    <h2 id="temp"></h2>
-    <p id="condition"></p>
-  </div>
-
-  <h3>Next 24 Hours</h3>
-  <div id="hourly" class="scroll"></div>
-
-  <h3>7 Day Forecast</h3>
-  <div id="daily" class="scroll"></div>
-
+    <div class="forecast" id="forecast"></div>
 </div>
 
-<script src="script.js"></script>
+<script>
+const apiKey = "25989a1f238349de8de55646261607";
+
+async function searchWeather(){
+    const city = document.getElementById("searchBox").value;
+    getWeather(city);
+}
+
+async function getWeather(city){
+    try{
+        const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${city}&days=7`);
+        const data = await res.json();
+
+        if(data.error){
+            alert("City not found");
+            return;
+        }
+
+        document.getElementById("weather").innerHTML = `
+            <h2 class="city">${data.location.name}</h2>
+            <img src="${data.current.condition.icon}">
+            <div class="temp">${data.current.temp_c}°C</div>
+            <p>${data.current.condition.text}</p>
+
+            <div class="details">
+                <div class="card">
+                    <p>💧</p>
+                    <p>${data.current.humidity}%</p>
+                </div>
+                <div class="card">
+                    <p>🌬️</p>
+                    <p>${data.current.wind_kph} km/h</p>
+                </div>
+            </div>
+        `;
+
+        let forecastHTML = "";
+        data.forecast.forecastday.forEach(day=>{
+            forecastHTML += `
+                <div>
+                    <p>${day.date}</p>
+                    <img src="${day.day.condition.icon}">
+                    <p>${day.day.avgtemp_c}°C</p>
+                </div>
+            `;
+        });
+
+        document.getElementById("forecast").innerHTML = forecastHTML;
+
+    }catch(err){
+        alert("Error loading weather");
+        console.log(err);
+    }
+}
+</script>
+
 </body>
 </html>
