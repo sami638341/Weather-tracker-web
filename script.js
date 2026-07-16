@@ -1,97 +1,86 @@
-const apiKey = "25989a1f238349de8de55646261607";
+const API_KEY = "25989a1f238349de8de55646261607";
 
-// THEME
-function toggleTheme() {
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-}
+async function getWeather() {
+  const city = document.getElementById("search").value;
 
-// LOADER
-function showLoader(show) {
-  document.getElementById("loader").style.display = show ? "block" : "none";
-}
+  const geo = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${API_KEY}`);
+  const geoData = await geo.json();
 
-// SEARCH
-function searchWeather() {
-  let city = document.getElementById("search").value;
-  fetchWeather(city);
-}
+  const { lat, lon } = geoData[0];
 
-// AUTO LOCATION
-navigator.geolocation.getCurrentPosition(pos => {
-  fetchWeather(`${pos.coords.latitude},${pos.coords.longitude}`);
-});
-
-// FETCH
-async function fetchWeather(q) {
-
-  showLoader(true);
-
-  let res = await fetch(
-    `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${q}&days=7`
+  const res = await fetch(
+    `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
   );
-  let data = await res.json();
 
-  showLoader(false);
+  const data = await res.json();
 
-  // WEATHER UI
-  document.getElementById("weather").innerHTML = `
-    <h2>${data.location.name}</h2>
-    <h1>${data.current.temp_c}°C</h1>
-    <p>${data.current.condition.text}</p>
-    <img src="https:${data.current.condition.icon}">
-  `;
+  displayCurrent(data, city);
+  displayHourly(data.hourly);
+  displayDaily(data.daily);
+  changeTheme(data.current.weather[0].main.toLowerCase());
+}
 
-  // SAVE
-  localStorage.setItem("weatherData", JSON.stringify(data));
+function displayCurrent(data, city) {
+  document.getElementById("city").innerText = city;
+  document.getElementById("temp").innerText = Math.round(data.current.temp) + "°C";
+  document.getElementById("desc").innerText = data.current.weather[0].description;
+  document.getElementById("icon").src =
+    `https://openweathermap.org/img/wn/${data.current.weather[0].icon}@4x.png`;
+}
 
-  // FORECAST
-  let html = "";
+/* 24 HOURS */
+function displayHourly(hourly) {
+  const container = document.getElementById("hourly");
+  container.innerHTML = "";
 
-  data.forecast.forecastday.forEach((day, i) => {
-    html += `
-      <div class="day-card fade" onclick="openDetails(${i})">
-        <h4>${day.date}</h4>
-        <p>${day.day.avgtemp_c}°C</p>
-        <img src="https:${day.day.condition.icon}">
-      </div>
+  hourly.slice(0, 24).forEach(h => {
+    const div = document.createElement("div");
+    div.className = "hour-card fade-in";
+
+    div.innerHTML = `
+      <p>${new Date(h.dt * 1000).getHours()}:00</p>
+      <img src="https://openweathermap.org/img/wn/${h.weather[0].icon}.png">
+      <p>${Math.round(h.temp)}°C</p>
     `;
+
+    container.appendChild(div);
   });
-
-  document.getElementById("forecast").innerHTML = html;
 }
 
-// OPEN DETAILS
-function openDetails(i) {
-  localStorage.setItem("dayIndex", i);
-  window.location.href = "details.html";
-}
+/* 7 DAYS */
+function displayDaily(days) {
+  const container = document.getElementById("daily");
+  container.innerHTML = "";
 
-// DETAILS PAGE
-if (window.location.pathname.includes("details.html")) {
+  days.slice(0, 7).forEach(day => {
+    const div = document.createElement("div");
+    div.className = "day-card fade-in";
 
-  let data = JSON.parse(localStorage.getItem("weatherData"));
-  let index = localStorage.getItem("dayIndex");
-  let day = data.forecast.forecastday[index];
-
-  let html = `<h2>${day.date}</h2><div class="hour-grid">`;
-
-  day.hour.forEach(h => {
-    html += `
-      <div class="hour-box">
-        <p>${h.time.split(" ")[1]}</p>
-        <p>${h.temp_c}°C</p>
-        <img src="https:${h.condition.icon}">
-      </div>
+    div.innerHTML = `
+      <p>${new Date(day.dt * 1000).toLocaleDateString()}</p>
+      <p>${Math.round(day.temp.day)}°C</p>
     `;
+
+    div.onclick = () => {
+      localStorage.setItem("selectedDay", JSON.stringify(day));
+      window.location.href = "details.html";
+    };
+
+    container.appendChild(div);
   });
-
-  html += "</div>";
-
-  document.getElementById("details").innerHTML = html;
 }
 
-// BACK
-function goBack() {
-  window.history.back();
+/* AUTO COLOR */
+function changeTheme(weather) {
+  if (weather.includes("rain"))
+    document.body.style.background = "linear-gradient(#4b6cb7,#182848)";
+  else if (weather.includes("clear"))
+    document.body.style.background = "linear-gradient(#fceabb,#f8b500)";
+  else if (weather.includes("cloud"))
+    document.body.style.background = "linear-gradient(#757f9a,#d7dde8)";
 }
+
+/* DARK MODE */
+document.getElementById("themeToggle").onclick = () => {
+  document.body.classList.toggle("dark");
+};
