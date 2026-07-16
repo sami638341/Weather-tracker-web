@@ -3,24 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Weather App</title>
+<title>Weather Pro+</title>
 
 <link rel="stylesheet" href="style.css">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-</head>
 
+</head>
 <body>
 
-<div class="container">
+<div class="app">
 
-    <div class="search">
+    <div class="top">
         <input id="searchBox" placeholder="Search city...">
         <button onclick="searchWeather()">🔍</button>
+        <button onclick="getLocation()">📍</button>
+        <button onclick="toggleTheme()">🌙</button>
     </div>
 
     <div id="weather" class="weather"></div>
 
+    <h3>Next 24 Hours</h3>
+    <div id="hourly" class="hourly"></div>
+
+    <h3>7 Days Forecast</h3>
     <div id="forecast" class="forecast"></div>
 
 </div>
