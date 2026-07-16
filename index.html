@@ -2,25 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Weather Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeatherX</title>
 
   <link rel="stylesheet" href="style.css">
 
-  <!-- Leaflet Map -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 </head>
 
 <body>
 
-  <h1>🌤 Weather Pro</h1>
+<div class="container">
 
-  <div class="search">
-    <input type="text" id="city" placeholder="Enter city">
-    <button onclick="searchWeather()">Search</button>
-    <button onclick="getLocation()">📍</button>
+  <div class="navbar">
+    <h2>🌦 WeatherX</h2>
+    <input type="text" id="search" placeholder="Search city..."
+      onkeypress="if(event.key==='Enter') searchWeather()">
   </div>
 
+  <div id="loader" class="loader"></div>
+
   <div id="weather" class="card"></div>
+
+  <h2>24 Hour Forecast</h2>
+  <div id="hourly"></div>
 
   <h2>7 Day Forecast</h2>
   <div id="forecast"></div>
@@ -28,10 +34,10 @@
   <h2>Radar Map</h2>
   <div id="map"></div>
 
-  <button onclick="toggleTheme()">🌙 Toggle Theme</button>
+</div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="script.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
