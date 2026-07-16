@@ -1,128 +1,81 @@
 body {
   margin: 0;
-  font-family: sans-serif;
-  transition: 0.4s;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: white;
+  transition: 0.5s;
 }
 
-/* THEMES */
-body.light {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-}
-
-body.dark {
-  background: #0f2027;
-}
-
-/* CONTAINER */
+/* Center + fix zoom issue */
 .container {
   max-width: 420px;
   margin: auto;
-  padding: 15px;
-}
-
-/* TOP */
-.topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.actions {
-  display: flex;
-  gap: 5px;
-}
-
-/* INPUT */
-input {
-  padding: 6px;
-  border-radius: 10px;
-  border: none;
-  width: 110px;
-}
-
-/* BUTTON */
-button {
-  padding: 6px 10px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-}
-
-/* GLASS CARD */
-.card {
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(15px);
-  padding: 15px;
-  border-radius: 20px;
-  margin-top: 15px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-}
-
-/* FORECAST */
-#forecast {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.day-card {
-  padding: 12px;
-  border-radius: 15px;
-  background: rgba(255,255,255,0.1);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.day-card:hover {
-  transform: scale(1.05);
-}
-
-/* HOURLY GRID */
-.hour-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  gap: 8px;
-}
-
-.hour-box {
-  background: rgba(255,255,255,0.15);
-  padding: 8px;
-  border-radius: 10px;
+  padding: 20px;
   text-align: center;
 }
 
-/* ANIMATIONS */
-.fade {
-  animation: fadeIn 0.5s ease-in;
+/* Fade animation */
+.fade-in {
+  animation: fadeIn 1s ease;
 }
 
 @keyframes fadeIn {
-  from {opacity:0; transform:translateY(10px);}
-  to {opacity:1; transform:translateY(0);}
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
 }
 
-/* LOADER */
-.loader {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: #0008;
+/* Top bar */
+.top-bar {
+  display: flex;
+  gap: 8px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  outline: none;
+}
+
+/* Buttons clean */
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: rgba(255,255,255,0.2);
+  color: white;
+}
+
+/* Scroll cards */
+.scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+/* Glass cards */
+.hour-card, .day-card {
+  min-width: 80px;
+  padding: 10px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  transition: 0.3s;
+}
+
+.hour-card:hover, .day-card:hover {
+  transform: scale(1.1);
+}
+
+/* Dark mode */
+body.dark {
+  background: #121212;
+}
+
+/* Smooth scroll */
+.scroll::-webkit-scrollbar {
   display: none;
-}
-
-.loader::after {
-  content: "";
-  width: 40px;
-  height: 40px;
-  border: 5px solid white;
-  border-top: 5px solid transparent;
-  border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
