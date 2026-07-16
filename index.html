@@ -6,7 +6,9 @@
 <link rel="stylesheet" href="style.css">
 </head>
 
-<body id="body">
+<body class="light">
+
+<div id="loader" class="loader"></div>
 
 <div class="container">
 
@@ -14,15 +16,16 @@
     <h2>🌦 WeatherX</h2>
 
     <div class="actions">
-      <input type="text" id="search" placeholder="City..."
+      <input id="search" placeholder="City..."
         onkeypress="if(event.key==='Enter') searchWeather()">
+
       <button onclick="toggleTheme()">🌙</button>
     </div>
   </div>
 
-  <div id="weather" class="card big"></div>
+  <div id="weather" class="card big fade"></div>
 
-  <h3>7 Day Forecast</h3>
+  <h3>7-Day Forecast</h3>
   <div id="forecast"></div>
 
 </div>
