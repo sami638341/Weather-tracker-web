@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Weather Ultra</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="bg-animation"></div>
+
+<div class="app">
+
+  <div class="search">
+    <input id="cityInput" placeholder="Search city...">
+    <button onclick="getWeatherByCity()">🔍</button>
+  </div>
+
+  <div class="top">
+    <h1 id="city">Loading...</h1>
+    <p id="date"></p>
+  </div>
+
+  <div id="currentWeather" class="glass main-card"></div>
+
+  <canvas id="tempChart"></canvas>
+
+  <div class="section">
+    <h3>Hourly</h3>
+    <div id="hourly" class="scroll"></div>
+  </div>
+
+  <div class="section">
+    <h3>7 Days</h3>
+    <div id="daily" class="daily-grid"></div>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
