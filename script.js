@@ -1,100 +1,88 @@
 const apiKey = "25989a1f238349de8de55646261607";
 
 window.onload = () => {
-  getLocation(); // auto load user location
+  getLocation();
 };
 
-function toggleTheme(){
-  document.body.classList.toggle("light");
+function searchWeather() {
+  const city = document.getElementById("city").value;
+  if (city) fetchWeather(city);
 }
 
-// 📍 LIVE LOCATION
-function getLocation(){
-  if(navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(pos => {
+function getLocation() {
+  navigator.geolocation.getCurrentPosition(
+    pos => {
       const lat = pos.coords.latitude;
       const lon = pos.coords.longitude;
-      getWeather(`${lat},${lon}`);
-    }, () => {
-      alert("Location access denied");
-      getWeather("Karachi");
-    });
-  }
+
+      fetchWeather(`${lat},${lon}`);
+      loadRadar(lat, lon);
+    },
+    () => alert("Location denied ❌")
+  );
 }
 
-// SEARCH
-function searchWeather(){
-  const city = document.getElementById("searchBox").value.trim();
-  if(!city) return;
-  getWeather(city);
+async function fetchWeather(query) {
+  const res = await fetch(
+    `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${query}&days=7`
+  );
+  const data = await res.json();
+
+  document.getElementById("weather").innerHTML = `
+    <h2>${data.location.name}, ${data.location.country}</h2>
+    <h1>${data.current.temp_c}°C</h1>
+    <p>${data.current.condition.text}</p>
+    <img src="https:${data.current.condition.icon}">
+  `;
+
+  showForecast(data.forecast.forecastday);
 }
 
-// MAIN WEATHER FUNCTION
-async function getWeather(query){
-  try{
-    const res = await fetch(`https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${query}&days=7`);
-    const data = await res.json();
+function showForecast(days) {
+  const container = document.getElementById("forecast");
+  container.innerHTML = "";
 
-    if(data.error){
-      alert("City not found");
-      return;
-    }
+  days.forEach(day => {
+    const div = document.createElement("div");
+    div.className = "day-card";
 
-    // CHANGE BACKGROUND
-    setBackground(data.current.condition.text.toLowerCase());
-
-    // CURRENT
-    document.getElementById("weather").innerHTML = `
-      <h2>${data.location.name}</h2>
-      <img src="https:${data.current.condition.icon}">
-      <div class="temp">${data.current.temp_c}°C</div>
-      <p>${data.current.condition.text}</p>
-      <p>💧 ${data.current.humidity}% | 🌬 ${data.current.wind_kph} km/h</p>
+    div.innerHTML = `
+      <h4>${day.date}</h4>
+      <p>${day.day.avgtemp_c}°C</p>
+      <img src="https:${day.day.condition.icon}">
     `;
 
-    // 24 HOURS
-    let hourlyHTML = "";
-    data.forecast.forecastday[0].hour.forEach(h => {
-      hourlyHTML += `
-        <div>
-          <p>${h.time.split(" ")[1]}</p>
-          <img src="https:${h.condition.icon}">
-          <p>${h.temp_c}°</p>
-        </div>
-      `;
-    });
-    document.getElementById("hourly").innerHTML = hourlyHTML;
+    div.onclick = () => {
+      localStorage.setItem("dayData", JSON.stringify(day));
+      window.location.href = "details.html";
+    };
 
-    // 7 DAYS
-    let forecastHTML = "";
-    data.forecast.forecastday.forEach(day => {
-      forecastHTML += `
-        <div>
-          <p>${day.date}</p>
-          <img src="https:${day.day.condition.icon}">
-          <p>${day.day.avgtemp_c}°C</p>
-        </div>
-      `;
-    });
-    document.getElementById("forecast").innerHTML = forecastHTML;
-
-  }catch(err){
-    console.log(err);
-    alert("Error loading weather");
-  }
+    container.appendChild(div);
+  });
 }
 
-// 🌤️ BACKGROUND LOGIC
-function setBackground(condition){
-  document.body.classList.remove("sunny","cloudy","rain");
+// 🌧 Radar Map
+async function loadRadar(lat, lon) {
+  const res = await fetch("https://api.rainviewer.com/public/weather-maps.json");
+  const data = await res.json();
 
-  if(condition.includes("sun") || condition.includes("clear")){
-    document.body.classList.add("sunny");
+  const frame = data.radar.past[data.radar.past.length - 1].path;
+
+  if (window.map) {
+    window.map.remove();
   }
-  else if(condition.includes("rain")){
-    document.body.classList.add("rain");
-  }
-  else{
-    document.body.classList.add("cloudy");
-  }
+
+  window.map = L.map("map").setView([lat, lon], 6);
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+    .addTo(window.map);
+
+  L.tileLayer(
+    `https://tilecache.rainviewer.com${frame}/256/{z}/{x}/{y}/2/1_1.png`,
+    { opacity: 0.5 }
+  ).addTo(window.map);
+}
+
+function toggleTheme() {
+  document.body.classList.toggle("dark");
 }
