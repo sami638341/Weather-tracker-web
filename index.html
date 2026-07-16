@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WeatherX</title>
+<meta charset="UTF-8">
+<title>Weather Pro</title>
 <link rel="stylesheet" href="style.css">
 </head>
+<body>
 
-<body class="light">
+<div class="container fade-in">
 
-<div id="loader" class="loader"></div>
-
-<div class="container">
-
-  <div class="topbar">
-    <h2>🌦 WeatherX</h2>
-
-    <div class="actions">
-      <input id="search" placeholder="City..."
-        onkeypress="if(event.key==='Enter') searchWeather()">
-
-      <button onclick="toggleTheme()">🌙</button>
-    </div>
+  <div class="top-bar">
+    <input type="text" id="search" placeholder="Search city...">
+    <button onclick="getWeather()">🔍</button>
+    <button id="themeToggle">🌙</button>
   </div>
 
-  <div id="weather" class="card big fade"></div>
+  <h1 id="city"></h1>
+  <h2 id="temp"></h2>
+  <p id="desc"></p>
+  <img id="icon">
+
+  <h3>Next 24 Hours</h3>
+  <div id="hourly" class="scroll"></div>
 
   <h3>7-Day Forecast</h3>
-  <div id="forecast"></div>
+  <div id="daily" class="scroll"></div>
 
 </div>
 
