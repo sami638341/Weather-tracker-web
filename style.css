@@ -79,3 +79,22 @@ body.dark {
 .scroll::-webkit-scrollbar {
   display: none;
 }
+.back-btn {
+  margin-bottom: 15px;
+}
+
+/* Extra info grid */
+.extra-info {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.info-card {
+  padding: 15px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  width: 90px;
+}
