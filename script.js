@@ -1,7 +1,15 @@
 const apiKey = "25989a1f238349de8de55646261607";
 
-// DEFAULT THEME
-document.body.classList.add("light");
+// THEME
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  document.body.classList.toggle("light");
+}
+
+// LOADER
+function showLoader(show) {
+  document.getElementById("loader").style.display = show ? "block" : "none";
+}
 
 // SEARCH
 function searchWeather() {
@@ -9,31 +17,24 @@ function searchWeather() {
   fetchWeather(city);
 }
 
-// THEME TOGGLE
-function toggleTheme() {
-  document.body.classList.toggle("dark");
-  document.body.classList.toggle("light");
-}
-
-// AUTO LOAD
+// AUTO LOCATION
 navigator.geolocation.getCurrentPosition(pos => {
   fetchWeather(`${pos.coords.latitude},${pos.coords.longitude}`);
 });
 
+// FETCH
 async function fetchWeather(q) {
+
+  showLoader(true);
+
   let res = await fetch(
     `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${q}&days=7`
   );
   let data = await res.json();
 
-  // CHANGE UI COLOR BASED ON WEATHER
-  if (data.current.condition.text.toLowerCase().includes("rain")) {
-    document.body.style.background = "#4e54c8";
-  } else if (data.current.condition.text.toLowerCase().includes("sun")) {
-    document.body.style.background = "#f7971e";
-  }
+  showLoader(false);
 
-  // CURRENT
+  // WEATHER UI
   document.getElementById("weather").innerHTML = `
     <h2>${data.location.name}</h2>
     <h1>${data.current.temp_c}°C</h1>
@@ -41,29 +42,56 @@ async function fetchWeather(q) {
     <img src="https:${data.current.condition.icon}">
   `;
 
-  // 7 DAY + 24 HOUR INSIDE
+  // SAVE
+  localStorage.setItem("weatherData", JSON.stringify(data));
+
+  // FORECAST
   let html = "";
 
-  data.forecast.forecastday.forEach(day => {
-
+  data.forecast.forecastday.forEach((day, i) => {
     html += `
-      <div class="day-card">
+      <div class="day-card fade" onclick="openDetails(${i})">
         <h4>${day.date}</h4>
         <p>${day.day.avgtemp_c}°C</p>
-
-        <div class="hourly">
-          ${day.hour.slice(0, 6).map(h => `
-            <div class="hour">
-              <p>${h.time.split(" ")[1]}</p>
-              <p>${h.temp_c}°C</p>
-              <img src="https:${h.condition.icon}">
-            </div>
-          `).join("")}
-        </div>
-
+        <img src="https:${day.day.condition.icon}">
       </div>
     `;
   });
 
   document.getElementById("forecast").innerHTML = html;
+}
+
+// OPEN DETAILS
+function openDetails(i) {
+  localStorage.setItem("dayIndex", i);
+  window.location.href = "details.html";
+}
+
+// DETAILS PAGE
+if (window.location.pathname.includes("details.html")) {
+
+  let data = JSON.parse(localStorage.getItem("weatherData"));
+  let index = localStorage.getItem("dayIndex");
+  let day = data.forecast.forecastday[index];
+
+  let html = `<h2>${day.date}</h2><div class="hour-grid">`;
+
+  day.hour.forEach(h => {
+    html += `
+      <div class="hour-box">
+        <p>${h.time.split(" ")[1]}</p>
+        <p>${h.temp_c}°C</p>
+        <img src="https:${h.condition.icon}">
+      </div>
+    `;
+  });
+
+  html += "</div>";
+
+  document.getElementById("details").innerHTML = html;
+}
+
+// BACK
+function goBack() {
+  window.history.back();
 }
