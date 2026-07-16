@@ -1,99 +1,88 @@
 body {
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(-45deg, #1e3c72, #2a5298, #00c6ff, #0072ff);
-  background-size: 400% 400%;
-  animation: bg 10s ease infinite;
+  font-family: sans-serif;
+  transition: 0.3s;
+}
+
+/* LIGHT / DARK */
+body.light {
+  background: linear-gradient(#4facfe, #00f2fe);
   color: white;
 }
 
-@keyframes bg {
-  0% {background-position:0% 50%;}
-  50% {background-position:100% 50%;}
-  100% {background-position:0% 50%;}
+body.dark {
+  background: #121212;
+  color: white;
 }
 
+/* LAYOUT */
 .container {
-  max-width: 1100px;
+  max-width: 500px;
   margin: auto;
   padding: 15px;
 }
 
-.navbar {
+/* TOP BAR */
+.topbar {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 5px;
 }
 
 input {
-  padding: 10px;
-  border-radius: 10px;
+  padding: 6px;
+  border-radius: 8px;
   border: none;
+  width: 100px; /* FIXED SMALL SIZE */
 }
 
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* CARDS */
 .card {
-  background: rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.2);
+  padding: 15px;
+  border-radius: 15px;
+  margin-top: 15px;
   backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 20px;
-  margin: 10px 0;
-  transition: 0.3s;
 }
 
-.card:hover {
-  transform: translateY(-5px);
+.big {
+  text-align: center;
 }
 
-#hourly {
+/* FORECAST */
+#forecast {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* DAY CARD */
+.day-card {
+  background: rgba(255,255,255,0.15);
+  padding: 10px;
+  border-radius: 12px;
+}
+
+/* HOURLY INSIDE DAY */
+.hourly {
   display: flex;
   overflow-x: auto;
 }
 
 .hour {
-  min-width: 100px;
-  margin: 10px;
-  padding: 10px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 10px;
-}
-
-#forecast {
-  display: flex;
-  overflow-x: auto;
-}
-
-.day-card {
-  min-width: 120px;
-  margin: 10px;
-  padding: 15px;
-  border-radius: 15px;
-  background: rgba(255,255,255,0.2);
-  cursor: pointer;
-  transition: 0.3s;
+  min-width: 70px;
+  margin-right: 8px;
   text-align: center;
-}
-
-.day-card:hover {
-  transform: scale(1.1);
-}
-
-#map {
-  height: 400px;
-  border-radius: 15px;
-  margin-top: 20px;
-}
-
-.loader {
-  border: 5px solid white;
-  border-top: 5px solid transparent;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: auto;
-  display: none;
-}
-
-@keyframes spin {
-  100% {transform: rotate(360deg);}
 }
