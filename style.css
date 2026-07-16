@@ -1,112 +1,57 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:Poppins,sans-serif;
+body {
+  font-family: Arial;
+  text-align: center;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: white;
 }
 
-body{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#1e3c72,#2a5298);
-  color:#fff;
-  transition:0.5s;
+.search input {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
 }
 
-/* Dynamic backgrounds */
-body.sunny{
-  background:linear-gradient(135deg,#f7971e,#ffd200);
+button {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
 }
 
-body.cloudy{
-  background:linear-gradient(135deg,#757f9a,#d7dde8);
+.card {
+  margin: 20px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(10px);
 }
 
-body.rain{
-  background:linear-gradient(135deg,#373b44,#4286f4);
+#forecast {
+  display: flex;
+  overflow-x: auto;
 }
 
-body.light{
-  background:#f2f2f2;
-  color:#111;
+.day-card {
+  min-width: 120px;
+  margin: 10px;
+  padding: 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.app{
-  width:95%;
-  max-width:420px;
-  padding:20px;
-  border-radius:25px;
-  background:rgba(255,255,255,0.15);
-  backdrop-filter:blur(20px);
-  box-shadow:0 10px 30px rgba(0,0,0,0.3);
+.day-card:hover {
+  transform: scale(1.1);
 }
 
-.top{
-  display:flex;
-  gap:8px;
-  margin-bottom:15px;
+#map {
+  height: 400px;
+  margin: 20px;
+  border-radius: 15px;
 }
 
-.top input{
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:12px;
-  outline:none;
-}
-
-.top button{
-  padding:10px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  background:#ffffff30;
-  color:#fff;
-  font-size:16px;
-}
-
-.weather{
-  text-align:center;
-  margin-bottom:20px;
-}
-
-.weather img{
-  width:100px;
-}
-
-.temp{
-  font-size:48px;
-  font-weight:bold;
-}
-
-.hourly{
-  display:flex;
-  overflow-x:auto;
-  gap:10px;
-  padding:10px 0;
-}
-
-.hourly div{
-  min-width:70px;
-  padding:10px;
-  background:rgba(255,255,255,0.2);
-  border-radius:15px;
-  text-align:center;
-}
-
-.forecast{
-  display:flex;
-  overflow-x:auto;
-  gap:10px;
-  margin-top:10px;
-}
-
-.forecast div{
-  min-width:80px;
-  padding:10px;
-  background:rgba(255,255,255,0.2);
-  border-radius:15px;
-  text-align:center;
+.dark {
+  background: #0f172a;
 }
