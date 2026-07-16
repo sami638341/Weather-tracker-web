@@ -4,73 +4,77 @@ window.onload = () => {
   getLocation();
 };
 
+function showLoader(show) {
+  document.getElementById("loader").style.display = show ? "block" : "none";
+}
+
 function searchWeather() {
-  const city = document.getElementById("city").value;
+  let city = document.getElementById("search").value;
   if (city) fetchWeather(city);
 }
 
 function getLocation() {
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const lat = pos.coords.latitude;
-      const lon = pos.coords.longitude;
-
-      fetchWeather(`${lat},${lon}`);
-      loadRadar(lat, lon);
-    },
-    () => alert("Location denied ❌")
-  );
-}
-
-async function fetchWeather(query) {
-  const res = await fetch(
-    `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${query}&days=7`
-  );
-  const data = await res.json();
-
-  document.getElementById("weather").innerHTML = `
-    <h2>${data.location.name}, ${data.location.country}</h2>
-    <h1>${data.current.temp_c}°C</h1>
-    <p>${data.current.condition.text}</p>
-    <img src="https:${data.current.condition.icon}">
-  `;
-
-  showForecast(data.forecast.forecastday);
-}
-
-function showForecast(days) {
-  const container = document.getElementById("forecast");
-  container.innerHTML = "";
-
-  days.forEach(day => {
-    const div = document.createElement("div");
-    div.className = "day-card";
-
-    div.innerHTML = `
-      <h4>${day.date}</h4>
-      <p>${day.day.avgtemp_c}°C</p>
-      <img src="https:${day.day.condition.icon}">
-    `;
-
-    div.onclick = () => {
-      localStorage.setItem("dayData", JSON.stringify(day));
-      window.location.href = "details.html";
-    };
-
-    container.appendChild(div);
+  navigator.geolocation.getCurrentPosition(pos => {
+    fetchWeather(`${pos.coords.latitude},${pos.coords.longitude}`);
+    loadRadar(pos.coords.latitude, pos.coords.longitude);
   });
 }
 
-// 🌧 Radar Map
-async function loadRadar(lat, lon) {
-  const res = await fetch("https://api.rainviewer.com/public/weather-maps.json");
-  const data = await res.json();
+async function fetchWeather(query) {
+  showLoader(true);
 
-  const frame = data.radar.past[data.radar.past.length - 1].path;
+  let res = await fetch(
+    `https://api.weatherapi.com/v1/forecast.json?key=${apiKey}&q=${query}&days=7&aqi=no&alerts=no`
+  );
 
-  if (window.map) {
-    window.map.remove();
-  }
+  let data = await res.json();
+
+  showLoader(false);
+
+  // CURRENT
+  document.getElementById("weather").innerHTML = `
+    <h2>${data.location.name}</h2>
+    <h1>${data.current.temp_c}°C</h1>
+    <img src="https:${data.current.condition.icon}">
+    <p>${data.current.condition.text}</p>
+  `;
+
+  // HOURLY (24H)
+  let hourlyHTML = "";
+  data.forecast.forecastday[0].hour.forEach(h => {
+    hourlyHTML += `
+      <div class="hour">
+        <p>${h.time.split(" ")[1]}</p>
+        <p>${h.temp_c}°C</p>
+        <img src="https:${h.condition.icon}">
+      </div>
+    `;
+  });
+  document.getElementById("hourly").innerHTML = hourlyHTML;
+
+  // 7 DAY
+  let forecastHTML = "";
+  data.forecast.forecastday.forEach(day => {
+    forecastHTML += `
+      <div class="day-card" onclick='openDetails(${JSON.stringify(day)})'>
+        <p>${day.date}</p>
+        <p>${day.day.avgtemp_c}°C</p>
+        <img src="https:${day.day.condition.icon}">
+      </div>
+    `;
+  });
+  document.getElementById("forecast").innerHTML = forecastHTML;
+}
+
+// DETAILS PAGE
+function openDetails(day) {
+  localStorage.setItem("dayData", JSON.stringify(day));
+  window.location.href = "details.html";
+}
+
+// RADAR
+function loadRadar(lat, lon) {
+  if (window.map) window.map.remove();
 
   window.map = L.map("map").setView([lat, lon], 6);
 
@@ -78,11 +82,7 @@ async function loadRadar(lat, lon) {
     .addTo(window.map);
 
   L.tileLayer(
-    `https://tilecache.rainviewer.com${frame}/256/{z}/{x}/{y}/2/1_1.png`,
+    "https://tilecache.rainviewer.com/v2/radar/latest/256/{z}/{x}/{y}/2/1_1.png",
     { opacity: 0.5 }
   ).addTo(window.map);
-}
-
-function toggleTheme() {
-  document.body.classList.toggle("dark");
 }
