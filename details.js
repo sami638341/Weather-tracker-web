@@ -12,6 +12,16 @@ if (data) {
 
   document.getElementById("icon").src =
     `https://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`;
+
+  // 🔥 EXTRA DATA
+  document.getElementById("feels").innerText =
+    Math.round(data.feels_like.day) + "°C";
+
+  document.getElementById("humidity").innerText =
+    data.humidity + "%";
+
+  document.getElementById("wind").innerText =
+    data.wind_speed + " m/s";
 }
 
 function goBack() {
